@@ -1,13 +1,13 @@
 'use strict'
 
 var board = buildBoard()
-var level = ''
+var gLevel = ''
 drawBoard()
 let gGamerPos;
 
 
 function chooseSelect(ev) {
-    level = ev.target.value
+    gLevel = ev.target.value
     board = buildBoard()
     drawBoard()
 }
@@ -18,41 +18,50 @@ function buildBoard() {
     for (let i = 0; i < 5; i++) {
         board[i] = []
         for (let j = 0; j < 5; j++) {
-            board[i][j] = { isCatch: false }
+            board[i][j] = { isCatch: false, isBlock: false }
         }
     }
-    if (level === 'level1') level1(board)
-    else if (level === 'level2') level2(board)
+    if (gLevel === 'level1') {
+        document.querySelector('.victory').innerText = ''
+        level1(board)
+    }
+    else if (gLevel === 'level2') {
+        document.querySelector('.victory').innerText = ''
+        level2(board)
+    }
+    else return []
     return board
 }
 
 function level1(board) {
-    board[1][3].isCatch = true
-    board[2][1].isCatch = true
-    board[3][4].isCatch = true
-    board[4][0].isCatch = true
+    board[1][3].isBlock = true
+    board[2][1].isBlock = true
+    board[3][4].isBlock = true
+    board[4][0].isBlock = true
 }
 
 function level2(board) {
-    board[0][4].isCatch = true
-    board[2][3].isCatch = true
-    board[3][0].isCatch = true
-    board[4][0].isCatch = true
-    board[4][2].isCatch = true
+    board[0][4].isBlock = true
+    board[2][3].isBlock = true
+    board[3][0].isBlock = true
+    board[4][0].isBlock = true
+    board[4][2].isBlock = true
 }
 
 function drawBoard() {
     var strHtml = ''
-    board.forEach((_, i) => {
-        strHtml += "<tr>"
-        board[i].forEach((_, j) => {
-            var cellClass;
-            if (board[i][j].isCatch) cellClass = 'black'
-            strHtml += `<td onclick="handlerClick(${i}, ${j})" class='cell cell-${i}-${j} ${cellClass}'></td>`
+    if (board) {
+        board.forEach((_, i) => {
+            strHtml += "<tr>"
+            board[i].forEach((_, j) => {
+                var cellClass;
+                if (board[i][j].isBlock) cellClass = 'black'
+                strHtml += `<td onclick="handlerClick(${i}, ${j})" class='cell cell-${i}-${j} ${cellClass}'></td>`
+            });
+            strHtml += "</tr>"
         });
-        strHtml += "</tr>"
-    });
-    document.querySelector('.tbl').innerHTML = strHtml
+        document.querySelector('.tbl').innerHTML = strHtml
+    }
 }
 
 
@@ -67,7 +76,7 @@ function handlerClick(idxClicked, jdxClicked) {
                 for (let i = gGamerPos.i - 1; i >= 0; i--) {
                     for (let j = 0; j < board[0].length; j++) {
                         if (i < gGamerPos.i && j === gGamerPos.j) {
-                            if (!board[i][j].isCatch) {
+                            if (!board[i][j].isCatch && !board[i][j].isBlock) {
                                 gGamerPos.i = i
                                 gGamerPos.j = j
                                 board[i][j].isCatch = true
@@ -81,7 +90,7 @@ function handlerClick(idxClicked, jdxClicked) {
                 for (let i = gGamerPos.i + 1; i < board.length; i++) {
                     for (let j = 0; j < board[0].length; j++) {
                         if (i > gGamerPos.i && j === gGamerPos.j) {
-                            if (!board[i][j].isCatch) {
+                            if (!board[i][j].isCatch && !board[i][j].isBlock) {
                                 gGamerPos.i = i
                                 gGamerPos.j = j
                                 board[i][j].isCatch = true
@@ -95,7 +104,7 @@ function handlerClick(idxClicked, jdxClicked) {
                 for (let i = 0; i < board.length; i++) {
                     for (let j = gGamerPos.j - 1; j >= 0; j--) {
                         if (i === gGamerPos.i && j < gGamerPos.j) {
-                            if (!board[i][j].isCatch) {
+                            if (!board[i][j].isCatch && !board[i][j].isBlock) {
                                 gGamerPos.i = i
                                 gGamerPos.j = j
                                 board[i][j].isCatch = true
@@ -109,7 +118,7 @@ function handlerClick(idxClicked, jdxClicked) {
                 for (let i = 0; i < board.length; i++) {
                     for (let j = gGamerPos.j + 1; j < board[0].length; j++) {
                         if (i === gGamerPos.i && j > gGamerPos.j) {
-                            if (!board[i][j].isCatch) {
+                            if (!board[i][j].isCatch && !board[i][j].isBlock) {
                                 gGamerPos.i = i
                                 gGamerPos.j = j
                                 board[i][j].isCatch = true
@@ -129,7 +138,7 @@ function checkIsVictory() {
     var isVictory = true
     for (let i = 0; i < board.length; i++) {
         for (let j = 0; j < board[0].length; j++) {
-            if (!board[i][j].isCatch) {
+            if (!board[i][j].isCatch && !board[i][j].isBlock) {
                 isVictory = false
                 return
             }
@@ -137,9 +146,17 @@ function checkIsVictory() {
     }
     if (isVictory) {
         document.querySelector('.victory').innerText = 'well done'
+        gGamerPos = null
     }
 }
 
 function reset() {
-    location.reload()
+    board.forEach((_, i) => {
+        board[i].forEach((_, j) => {
+            board[i][j].isCatch = false
+        });
+    });
+    gGamerPos = null
+    document.querySelector('.victory').innerText = ''
+    drawBoard()
 }
