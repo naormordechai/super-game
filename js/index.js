@@ -1,8 +1,17 @@
 'use strict'
 
-const board = buildBoard()
+var board = buildBoard()
+var level = ''
 drawBoard()
 let gGamerPos;
+
+
+function chooseSelect(ev) {
+    level = ev.target.value
+    board = buildBoard()
+    drawBoard()
+}
+
 
 function buildBoard() {
     const board = [];
@@ -12,11 +21,24 @@ function buildBoard() {
             board[i][j] = { isCatch: false }
         }
     }
+    if (level === 'level1') level1(board)
+    else if (level === 'level2') level2(board)
+    return board
+}
+
+function level1(board) {
     board[1][3].isCatch = true
     board[2][1].isCatch = true
     board[3][4].isCatch = true
     board[4][0].isCatch = true
-    return board
+}
+
+function level2(board) {
+    board[0][4].isCatch = true
+    board[2][3].isCatch = true
+    board[3][0].isCatch = true
+    board[4][0].isCatch = true
+    board[4][2].isCatch = true
 }
 
 function drawBoard() {
@@ -104,16 +126,16 @@ function handlerClick(idxClicked, jdxClicked) {
 }
 
 function checkIsVictory() {
-    var x = true
+    var isVictory = true
     for (let i = 0; i < board.length; i++) {
         for (let j = 0; j < board[0].length; j++) {
             if (!board[i][j].isCatch) {
-                x = false
+                isVictory = false
                 return
             }
         }
     }
-    if (x) {
+    if (isVictory) {
         document.querySelector('.victory').innerText = 'well done'
     }
 }

@@ -9,6 +9,18 @@
     background: black;
 }
 
+.levels{
+    text-align: center
+}
+
+
+
+option {
+    font-size: 10px;
+    padding: 0;
+}
+
+
 .color-gamer{
     background: blue;
 }
