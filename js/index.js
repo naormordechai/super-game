@@ -118,6 +118,6 @@ function checkIsVictory() {
     }
 }
 
-function rest() {
+function reset() {
     location.reload()
 }
