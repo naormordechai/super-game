@@ -24,10 +24,13 @@ function buildBoard() {
     if (gLevel === 'level1') {
         document.querySelector('.victory').innerText = ''
         level1(board)
+        gGamerPos = null
     }
     else if (gLevel === 'level2') {
         document.querySelector('.victory').innerText = ''
         level2(board)
+        gGamerPos = null
+
     }
     else return []
     return board
