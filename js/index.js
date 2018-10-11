@@ -69,7 +69,7 @@ function drawBoard() {
 
 
 function handlerClick(idxClicked, jdxClicked) {
-    if (!board[idxClicked][jdxClicked].isCatch) {
+    if (!board[idxClicked][jdxClicked].isCatch && !board[idxClicked][jdxClicked].isBlock) {
         if (!gGamerPos) {
             gGamerPos = { i: idxClicked, j: jdxClicked }
             board[gGamerPos.i][gGamerPos.j].isCatch = true
